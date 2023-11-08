@@ -4,11 +4,26 @@
 MIST 4610 9:35-10:50 Group 9 
 
 # Team Members
-1. John Hulsey | 
-2. Jack Mathison | @JackMathison
-3. Carson Whitt | @whittcarson
-4. Justin Sullivan |
-5. Hayes Herzog | @purpwlhaze
+1. John Hulsey | @J-Hulsey
+   
+   REPO: https://github.com/purwplhaze/mist4610_project1
+   
+3. Jack Mathison | @JackMathison
+   
+   REPO: https://github.com/JackMathison/tissue
+   
+5. Carson Whitt | @whittcarson
+
+   REPO: https://github.com/whittcarson/MIST4610GroupProject1
+   
+7. Justin Sullivan | @Justin7ime
+   
+   REPO: https://github.com/Justn7ime/effective-parakeet
+   
+9. Hayes Herzog | @purpwlhaze
+    
+   REPO: https://github.com/purwplhaze/mist4610_project1
+   
 
 # Problem Description
 The task at hand is to model and build a relational database for the general workings of a football team. The central entity in the model is the 'team' entity. The team operates in conjunction with players, staff, coaches in order to track equipment, injuries, events, donations, and rental of facilities. We are interested in modeling these relationships and populating the entities and their attributes with sample data. We are also interested in performing functioning queries on the data so that we can generate reports and build insight about operations within the footaball team.
@@ -71,128 +86,138 @@ Overall, this football team database is designed to comprehensively represent an
 
 Query 1 lists the team name and ID for any team having players out from injuries, specifically those who will be recovering for a time greater than 2 months. The results are also grouped by teams having at least 2 players with long-term injuries.
 
-Select team_name, teamid 
-From injury Join specific_injury On injuryid = injury_injuryid Join player On 
-    player_playerid = playerid Join team On team_teamid = teamid
-Where injury_severity RegExp "4-6 Months|6-8 Months|6-12 Months"
-Group By team_name, teamid
-Having Count(playerid) >= 2;
+<img width="702" alt="A1" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/233cdba3-0bdf-4b17-bc1f-99ae4ea929b4">
+
 
 This query allows managers to quickly determine how what teams have players benched due to entended injury. During the season, it is crucial to know what key players you might be lacking on your team, and also what other teams are suffering the loss of players. Then coaches can make strategic changes to a game plan. Grouping by teams who have at least 2 players out for an extended time also shows what teams may be more vulnerable with more players injured.
 
 RESULTS
-Execute:
-> CALL TP_Q1
 
-+ -------------- + ----------- +
-| team_name      | teamid      |
-+ -------------- + ----------- +
-| Carolina       | 2           |
-| Tampa Bay      | 4           |
-| Los Angeles    | 7           |
-+ -------------- + ----------- +
-3 rows
-  
+<img width="287" alt="Q1" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/ac2aea6e-30ef-47da-a6e9-c2c8b02e8c26">
+
 **QUERY 2**
 
 Query 2 reports the information regarding renter information when booking an event and that event was a winning game. Results are ordered by descending book date to better organize the information in chronological order.
 
-Select event_id, renter_name, renter_contact_info, book_date 
-From rental_of_facility Join event On event_id = event_event_id
-Where event_type RegExp 'Game'
-And event_result RegExp 'Win'
-Order By book_date Desc;
+<img width="523" alt="A2" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/7ad050f7-76a1-4d24-9fc5-69abd3ade6f6">
+
 
 Query 2 is helpful in allowing a manager access to information regarding the renter of a facility. It also allows the manager to pinpoint groups of information by detailing the event type and event result. Having previous renters' information can reduce the trouble of reaching out to a renter should problems arise during the event.
 
 RESULTS
-Execute:
-> CALL TP_Q2
 
-+ ------------- + ---------------- + ------------------------ + -------------- +
-| event_id      | renter_name      | renter_contact_info      | book_date      |
-+ ------------- + ---------------- + ------------------------ + -------------- +
-| 8             | Ulysses Grant    | management@atlfalcons.com | 2023-10-26     |
-| 2             | John Adams       | management@nolasaints.com | 2023-10-15     |
-+ ------------- + ---------------- + ------------------------ + -------------- +
-2 rows
+<img width="661" alt="Q2" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/bf2fe28a-275d-47a4-8081-5023848c6c0c">
 
 **QUERY 3**
 
 Query 3 retrieves information about about what players have checked out certain equipment items and have since returned the item.
 
-Select equipment_name, player_l_name, player_f_name, player_position 
-From equipment Join equipment_checkout On equipmentid = equipment_equipmentid 
-Join player On player_playerid = playerid
-Where equipment_equipmentid In (3,4,5) And Exists
-(Select return_date From equipment_checkout)
-Group By player_position, equipment_name, player_l_name, player_f_name;
+<img width="631" alt="A3" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/8b8feb81-769e-41b8-88a3-118b96adc47a">
+
 
 Keeping track of equipment inventory is a big job for a team. Query 3 provides easy access to listings of players who have returned their items, subsequently allowing someone to know what items are still checked out. The query will also reveal trends to teams about which players keep items the longest and what items are most commonly checked out.
 
 RESULTS
 
-Execute:
-> CALL TP_Q3
-
-+ ------------------- + ------------------ + ------------------ + -------------------- +
-| equipment_name      | player_l_name      | player_f_name      | player_position      |
-+ ------------------- + ------------------ + ------------------ + -------------------- +
-| Jersey              | Davis              | Tae                | Linebacker           |
-| Jersey              | Montana            | Joe                | Quarter Back         |
-| Cleats              | Jefferson          | Van                | Wide Receiver        |
-+ ------------------- + ------------------ + ------------------ + -------------------- +
-3 rows
-
+<img width="819" alt="Q3" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/2b4ebe3c-8991-4194-a1f5-90b66b43898d">
 
 **QUERY 4**
 
 This query reports donations, by team, that have a value greater than the average donation value for their team.
 
-Select team_name, team_mascot, donation_amount, donor_f_name, donor_l_name, sponsor_name
-from team, donation, sponser
-where team.teamid = donation.team_teamid
-and donation.sponser_sponserid = sponser.sponserid
-and donation_amount >= (select avg(donation_amount) from donation where donation.team_teamid = team.teamid)
-Order by team_name, donation_amount;
+<img width="877" alt="A4" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/30de6306-c7c8-4d0b-937d-89e0d65f90cb">
+
 
 It is important for teams and sponsors to keep track of the flow of donations and where those donations are coming from. By understanding which donors on each team are generally gifting more money, financial linguistics officials will have more concrete reasoning to pursue certain people versus others when looking to fundraise.
 
 RESULTS
-Execute:
-> CALL TP_Q4
 
-+ -------------- + ---------------- + -------------------- + ----------------- + ----------------- + ----------------- +
-| team_name      | team_mascot      | donation_amount      | donor_f_name      | donor_l_name      | sponsor_name      |
-+ -------------- + ---------------- + -------------------- + ----------------- + ----------------- + ----------------- +
-| Atlanta        | Falcons          | 400000               | Cedric            | Daniels           | Uber Eats         |
-| Atlanta        | Falcons          | 420000               | Omar              | Little            | Subway            |
-| Atlanta        | Falcons          | 760000               | Paulie            | Galiteri          | Visa              |
-| Atlanta        | Falcons          | 800000               | Cedric            | Daniels           | Uber Eats         |
-| Carolina       | Panthers         | 1000000              | Logan             | Roy               | Cisco Systems     |
-| Carolina       | Panthers         | 2500000              | Logan             | Roy               | Cisco Systems     |
-| Detroit        | Lions            | 1000000              | James             | McNulty           | Visa              |
-| Jacksonville   | Jaguars          | 900                  | Jay               | Landsman          | DraftKings        |
-| Los Angeles    | Rams             | 6969                 | Roman             | Roy               | Cisco Systems     |
-| Los Angeles    | Chargers         | 9900                 | Carmela           | Soprano           | Gatorade          |
-| New Orleans    | Saints           | 1600000              | Corrado           | Soprano           | Gatorade          |
-| New York       | Giants           | 150000               | Corrado           | Soprano           | Gatorade          |
-| New York       | Jets             | 8000                 | Josh              | Lyman             | Verizon           |
-| Tampa Bay      | Buccaneers       | 6000000              | Tony              | Soprano           | Gatorade          |
-+ -------------- + ---------------- + -------------------- + ----------------- + ----------------- + ----------------- +
-14 rows
-  
+<img width="970" alt="Q4" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/743c3679-9837-4fcf-82ac-76b58518ac58">
+
 **QUERY 5**
-RESULTS
-**QUERY 6**
-RESULTS
-**QUERY 7**
-RESULTS
-**QUERY 8**
-RESULTS
-**QUERY 9**
+
+This query selects teams who have rented a facility for the purpose of practicing or watching film from a previous game, but who also have an offensive coordinator with less than 8 years of experience. The results are ordered by the correlating event date.
+
+<img width="774" alt="A5" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/220821cc-d582-4d46-82f0-e9874c5e8704">
+
+
+Query 5 allows a person to see when teams are training and how they split that time between practice and film review. The results also show teams where they stand with total experience among coaches. A team may use this information and gain more confidence in its possibilities or cause it to think about hiring new coaching staff to balance the skill set.
+
 RESULTS
 
+<img width="804" alt="Q5" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/c3b65011-8e46-4ff0-9a5e-83c35ace73c5">
+
+**QUERY 6**
+
+Query 6 identifies how many injured players a team had before a specified date, and lists the injured players’ ID, date of birth, position, and the severity of the injury. Results are ordered by ascending teamID.    
+
+<img width="806" alt="A6" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/4df20172-34ea-4669-b575-010fcdd8f9c7">
+
+
+Query 6 becomes valuable to a team and coaches by creating a way of determining what players were hurt before a specific date alongside information about the severity of the injury in order to make an estimate on how much longer a specific player might be hurt.
+
+RESULTS
+
+<img width="1105" alt="Q6" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/087e70ca-39b4-413a-a24f-5611bfc9f4a5">
+
+**QUERY 7**
+
+This query lists the staffID and name of staff members working for certain teams by relating the team’s name or mascot.
+
+<img width="440" alt="A7" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/798518df-78e9-427d-a37b-fa000e57d12e">
+
+
+Team managers will use query 7 to track which staff members are working under which teams. The staff work with many teams and managers may use this information to increase organization and the ease of identifying staff members under a range of teams.
+
+
+RESULTS
+
+<img width="320" alt="Q7" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/9a66e624-895b-4492-bf05-f07dfebd18e5">
+
+**QUERY 8**
+
+The query identifies football teams that have an above-average frequency of equipment checkouts. It counts how many times equipment has been checked out for each team, presenting this number alongside the team’s ID, name, and mascot. The teams included in the results are those where the count of equipment checkouts per team is greater than the average number of checkouts across all teams.
+
+<img width="961" alt="A8" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/7ac4b21a-ff59-4a59-b165-45e200b12df5">
+
+
+For a football team manager, this information is crucial for inventory management. Teams with high equipment checkout rates may have higher wear and tear on gear, indicating a potential need for more frequent replacements or the purchase of additional equipment to meet demand.
+
+
+
+RESULTS
+
+<img width="715" alt="Q8" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/86428e07-a18e-4d52-b885-6dfb2c2c61fc">
+
+**QUERY 9**
+
+The query tallies the number of donations made to football teams from sponsors identified as tech companies—specifically Verizon, Microsoft, Cisco Systems, and Uber Eats. It shows each team's ID, name, and mascot, along with the total number of donations received, only including teams that have received more than one donation. The results are sorted in descending order of the number of donations.
+
+<img width="763" alt="A9" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/2bad3075-fad9-411c-be69-93dafbae3685">
+
+From a team manager's standpoint, this query is useful for recognizing and prioritizing relationships with key sponsors. By understanding which tech companies are most supportive, the manager can focus on nurturing these partnerships, allocating appropriate recognition and engagement efforts to maintain and possibly increase their support.
+
+
+RESULTS
+
+<img width="626" alt="Q9" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/17e45704-8199-45ef-99c6-9b91ed55103b">
+
+**QUERY 10**
+
+The query retrieves details of players who have borrowed helmets from their football team and have not returned them. It connects player and equipment records, focusing on unreturned helmets by checking for a null return date and lists them along with player and team details, sorting by the date the helmets were borrowed.
+
+<img width="930" alt="A10" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/d3ca6649-f413-4874-8abb-8eca499fd43b">
+
+For a football team manager, this query helps manage equipment efficiently, ensuring helmets are returned on time for use by other players and maintaining safety standards by keeping track of gear usage.
+
+
+
+RESULTS
+<img width="1025" alt="Q10" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/a4dec95a-38aa-4a73-9333-73482341a26d">
+
+# Query Features
+
+<img width="694" alt="DatabaseInfo" src="https://github.com/whittcarson/MIST4610GroupProject1/assets/131502055/e4976440-2dc9-44be-8382-6e666b71be71">
 
 
 # Database Information
