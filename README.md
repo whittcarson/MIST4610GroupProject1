@@ -1,4 +1,4 @@
-## MIST4610_project1
+# MIST4610_project1
 
 # Team Name
 MIST 4610 9:35-10:50 Group 9 
